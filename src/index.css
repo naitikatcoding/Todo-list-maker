@@ -29,7 +29,7 @@ body {
   padding: 24px;
 }
 
-.navbar {
+/* .navbar {
   width: min(1200px, 100%);
   display: flex;
   align-items: center;
@@ -40,7 +40,7 @@ body {
   background: rgba(15, 23, 42, 0.45);
   backdrop-filter: blur(8px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-}
+} */
 
 .logo {
   display: flex;
@@ -51,4 +51,15 @@ body {
   display: block;
   width: 180px;
   height: auto;
+}
+
+.plus-icon {
+  width: 26px;
+  height: 26px;
+  transition: filter 0.2s ease;
+  filter: brightness(0) invert(1);
+}
+
+.task:hover .plus-icon {
+  filter: brightness(0) saturate(100%) invert(52%) sepia(94%) saturate(566%) hue-rotate(356deg) brightness(99%) contrast(101%);
 }
