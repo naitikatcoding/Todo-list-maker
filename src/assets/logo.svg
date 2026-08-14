@@ -1,0 +1,17 @@
+<svg viewBox="0 0 320 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="8" y1="6" x2="96" y2="94" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7C5CFC"/>
+      <stop offset="1" stop-color="#22D3B8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- icon -->
+  <rect x="8" y="6" width="88" height="88" rx="22" fill="url(#bg)"/>
+  <circle cx="76.75" cy="25.25" r="6.9" fill="#FF7A59"/>
+  <path d="M31.4 52.75 L43.75 65.1 L72.6 34.9" fill="none" stroke="#FFFFFF" stroke-width="9.3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- wordmark -->
+  <text x="118" y="66" font-family="'Trebuchet MS', 'Segoe UI', Verdana, sans-serif" font-weight="900" font-size="65" letter-spacing="0.5" fill="#b7b4c3">todo</text>
+  <rect x="119" y="76" width="46" height="7" rx="3.5" fill="#FF7A59"/>
+</svg>
