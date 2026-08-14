@@ -13,21 +13,21 @@ export default function InputBar({ onSubmit, isOpen }) {
 
   return (
     <div
-      className={`relative z-50 grid transition-all duration-500 ease-in-out  rounded-xl shadow-xl mt-4 ${
+      className={`relative z-50 grid transition-all duration-500 ease-in-out rounded-xl shadow-xl mt-4 ${
         isOpen ? "grid-rows-[1fr] opacity-100 pointer-events-auto" : "grid-rows-[0fr] opacity-0 pointer-events-none"
       }`}
     >
       <div className="overflow-hidden">
         <form 
           onSubmit={handleSubmit} 
-          className="flex gap-2.5 max-w-100 my-5 mx-auto px-4"
+          className="flex gap-2.5 max-w-md my-5 mx-auto px-4"
         >
           <input
             type="text"
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Add Your Task..."
-            className=" flex-1 text-center p-2.5 text-2xl rounded-4xl border border-[#ccc] text-white font-bold focus:outline-none focus:border-[#0070f3]"
+            className="flex-1 text-center p-2.5 text-2xl rounded-[32px] border border-white/20 bg-slate-900/90 text-white font-bold placeholder-gray-500 focus:outline-none focus:border-[#0070f3]"
           />
           <button 
             type="submit" 

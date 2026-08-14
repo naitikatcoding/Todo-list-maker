@@ -15,12 +15,11 @@ function App() {
     const newTask = {
       id: Date.now(),
       text: text,
-      completed: false // Tracks if the task is checked or not
+      completed: false
     };
     setTasks([...tasks, newTask]); 
   };
 
-  // Toggles the completed state of a clicked item
   const handleToggleComplete = (id) => {
     setTasks(
       tasks.map((task) =>
@@ -30,41 +29,37 @@ function App() {
   };
 
   return (
-    <div className="app-shell relative min-h-screen w-full overflow-x-hidden bg-slate-950 text-white">
+    <div className="app-shell relative min-h-screen w-full overflow-x-hidden bg-[#030712] text-white flex flex-col items-center">
       <Particles className="background-canvas absolute inset-0 z-0" />
       
-      <header className="relative z-50 w-full px-6 pt-10 flex justify-center">
+      <header className="relative z-50 w-full max-w-full px-4 sm:px-6 pt-10 flex justify-center">
         <Navbar onSearchClick={toggleInputBar} />
       </header>
 
-      <main className="relative z-50 max-w-xl mx-auto px-4 w-full">
+      <main className="relative z-50 w-full max-w-6xl px-4 mt-6">
         <InputBar isOpen={isOpen} onSubmit={handleAddTask} />
 
-        <div className="mt-8 space-y-3">
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
           {tasks.map((task) => (
             <div 
               key={task.id} 
-              className="p-4 bg-slate-900/60 border border-white/10 rounded-xl backdrop-blur-sm shadow-md flex items-center justify-between"
+              className="p-4 bg-slate-900/40 border border-white/10 rounded-xl backdrop-blur-sm shadow-md w-full flex items-center gap-4 h-fit"
             >
-              <div className="flex items-center gap-4 flex-1">
-                {/* Custom Checkbox Action Container */}
-                <button
-                  onClick={() => handleToggleComplete(task.id)}
-                  className="focus:outline-none shrink-0 cursor-pointer"
-                >
-                  {task.completed ? (
-                    
-                    <img src={done} alt="Completed" className="w-6 h-6" />
-                  ) : (
-                   
-                    <img src={notdone} alt="Not Completed" className="w-6 h-6" />
-                  )}
-                </button>
+              <button
+                onClick={() => handleToggleComplete(task.id)}
+                className="focus:outline-none shrink-0 cursor-pointer flex items-center justify-center w-9 h-9"
+              >
+                {task.completed ? (
+                  <img src={done} alt="Completed" className="w-6 h-6 object-contain" />
+                ) : (
+                  <img src={notdone} alt="Not Completed" className="w-9 h-9 object-contain" />
+                )}
+              </button>
 
-                {/* Task text fades and line-through applies when completed */}
+              <div className="flex-1 min-w-0">
                 <span 
-                  className={`text-lg transition-all duration-300 ${
-                    task.completed ? "line-through text-white/40" : "text-white"
+                  className={`text-lg font-medium tracking-wide block w-full break-words whitespace-normal text-left text-white ${
+                    task.completed ? "line-through text-white/30" : ""
                   }`}
                 >
                   {task.text}
