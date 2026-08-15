@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Particles from "./Components/background.jsx";
 import Navbar from "./Components/Navbar.jsx";
 import InputBar from "./Components/Inputbar.jsx";
@@ -7,35 +7,51 @@ import done from "./assets/done.svg";
 import edit from "./assets/edit.svg";
 import deleteIcon from "./assets/delete.svg";
 
+const API_URL = "http://localhost:5000/api/tasks";
+
 function App() {
   const [isOpen, setIsOpen] = useState(false);
   const [tasks, setTasks] = useState([]);
   const [editingTask, setEditingTask] = useState(null);
+
+  useEffect(() => {
+    fetch(API_URL)
+      .then(res => res.json())
+      .then(data => setTasks(data))
+      .catch(err => console.error(err));
+  }, []);
 
   const toggleInputBar = () => {
     setIsOpen((prev) => !prev);
     if (!isOpen) setEditingTask(null);
   };
 
-  const handleSaveTask = (text) => {
+  const handleSaveTask = async (text) => {
     if (editingTask) {
-      setTasks((prev) =>
-        prev.map((task) =>
-          task.id === editingTask.id ? { ...task, text, expanded: false } : task
-        )
-      );
+      try {
+        await fetch(`${API_URL}/${editingTask.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text })
+        });
+        
+        setTasks(prev => prev.map(task => 
+          task.id === editingTask.id ? { ...task, text } : task
+        ));
+      } catch (err) { console.error(err); }
+      
       setEditingTask(null);
       setIsOpen(false);
     } else {
-      setTasks((prev) => [
-        ...prev,
-        {
-          id: Date.now(),
-          text,
-          completed: false,
-          expanded: false,
-        },
-      ]);
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text })
+        });
+        const newTask = await res.json();
+        setTasks(prev => [...prev, newTask]);
+      } catch (err) { console.error(err); }
     }
   };
 
@@ -44,18 +60,29 @@ function App() {
     setIsOpen(true);
   };
 
-  const toggleTaskProperty = (id, key) => {
-    setTasks((prev) =>
-      prev.map((task) => (task.id === id ? { ...task, [key]: !task[key] } : task))
-    );
+  const toggleTaskProperty = async (id, key, currentValue) => {
+    try {
+      await fetch(`${API_URL}/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ [key]: !currentValue })
+      });
+      
+      setTasks((prev) =>
+        prev.map((task) => (task.id === id ? { ...task, [key]: !task[key] } : task))
+      );
+    } catch (err) { console.error(err); }
   };
 
-  const handleDeleteTask = (id) => {
-    setTasks((prev) => prev.filter((task) => task.id !== id));
-    if (editingTask?.id === id) {
-      setEditingTask(null);
-      setIsOpen(false);
-    }
+  const handleDeleteTask = async (id) => {
+    try {
+      await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+      setTasks((prev) => prev.filter((task) => task.id !== id));
+      if (editingTask?.id === id) {
+        setEditingTask(null);
+        setIsOpen(false);
+      }
+    } catch (err) { console.error(err); }
   };
 
   return (
@@ -85,7 +112,7 @@ function App() {
             >
               <div className="flex items-start gap-3 min-w-0 max-w-[75%] flex-1">
                 <button
-                  onClick={() => toggleTaskProperty(task.id, "completed")}
+                  onClick={() => toggleTaskProperty(task.id, "completed", task.completed)}
                   aria-label={task.completed ? "Mark task as incomplete" : "Mark task as complete"}
                   className="focus:outline-none shrink-0 cursor-pointer flex items-center justify-center w-9 h-9 mt-1"
                 >
@@ -97,11 +124,11 @@ function App() {
                 </button>
 
                 <div
-                  onClick={() => toggleTaskProperty(task.id, "expanded")}
+                  onClick={() => toggleTaskProperty(task.id, "expanded", task.expanded)}
                   role="button"
                   tabIndex={0}
                   aria-label="Toggle full task text expansion"
-                  onKeyDown={(e) => e.key === 'Enter' && toggleTaskProperty(task.id, "expanded")}
+                  onKeyDown={(e) => e.key === 'Enter' && toggleTaskProperty(task.id, "expanded", task.expanded)}
                   className="min-w-0 flex-1 cursor-pointer focus:outline-none"
                 >
                   <span
@@ -120,22 +147,14 @@ function App() {
                   aria-label="Edit task item"
                   className="p-1.5 hover:bg-white/10 rounded transition-colors cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-500"
                 >
-                  <img
-                    src={edit}
-                    alt=""
-                    className="w-5 h-5 object-contain"
-                  />
+                  <img src={edit} alt="" className="w-5 h-5 object-contain" />
                 </button>
                 <button
                   onClick={() => handleDeleteTask(task.id)}
                   aria-label="Delete task item"
                   className="p-1.5 hover:bg-red-500/20 text-red-400 rounded transition-colors cursor-pointer focus:outline-none focus:ring-1 focus:ring-red-500"
                 >
-                  <img
-                    src={deleteIcon}
-                    alt=""
-                    className="w-5 h-5 object-contain"
-                  />
+                  <img src={deleteIcon} alt="" className="w-5 h-5 object-contain" />
                 </button>
               </div>
             </article>
