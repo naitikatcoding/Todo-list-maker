@@ -1,73 +1,146 @@
-import { useState } from 'react';
+import { useState } from "react";
 import Particles from "./Components/background.jsx";
 import Navbar from "./Components/Navbar.jsx";
 import InputBar from "./Components/Inputbar.jsx";
 import notdone from "./assets/notdone.svg";
 import done from "./assets/done.svg";
+import edit from "./assets/edit.svg";
+import deleteIcon from "./assets/delete.svg";
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
   const [tasks, setTasks] = useState([]);
+  const [editingTask, setEditingTask] = useState(null);
 
-  const toggleInputBar = () => setIsOpen(!isOpen);
-
-  const handleAddTask = (text) => {
-    const newTask = {
-      id: Date.now(),
-      text: text,
-      completed: false
-    };
-    setTasks([...tasks, newTask]); 
+  const toggleInputBar = () => {
+    setIsOpen((prev) => !prev);
+    if (!isOpen) setEditingTask(null);
   };
 
-  const handleToggleComplete = (id) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
+  const handleSaveTask = (text) => {
+    if (editingTask) {
+      setTasks((prev) =>
+        prev.map((task) =>
+          task.id === editingTask.id ? { ...task, text, expanded: false } : task
+        )
+      );
+      setEditingTask(null);
+      setIsOpen(false);
+    } else {
+      setTasks((prev) => [
+        ...prev,
+        {
+          id: Date.now(),
+          text,
+          completed: false,
+          expanded: false,
+        },
+      ]);
+    }
+  };
+
+  const handleEditTask = (task) => {
+    setEditingTask(task);
+    setIsOpen(true);
+  };
+
+  const toggleTaskProperty = (id, key) => {
+    setTasks((prev) =>
+      prev.map((task) => (task.id === id ? { ...task, [key]: !task[key] } : task))
     );
+  };
+
+  const handleDeleteTask = (id) => {
+    setTasks((prev) => prev.filter((task) => task.id !== id));
+    if (editingTask?.id === id) {
+      setEditingTask(null);
+      setIsOpen(false);
+    }
   };
 
   return (
     <div className="app-shell relative min-h-screen w-full overflow-x-hidden bg-[#030712] text-white flex flex-col items-center">
       <Particles className="background-canvas absolute inset-0 z-0" />
-      
+
       <header className="relative z-50 w-full max-w-full px-4 sm:px-6 pt-10 flex justify-center">
         <Navbar onSearchClick={toggleInputBar} />
       </header>
 
       <main className="relative z-50 w-full max-w-6xl px-4 mt-6">
-        <InputBar isOpen={isOpen} onSubmit={handleAddTask} />
+        <h1 className="sr-only">Interactive Task Manager Dashboard</h1>
+        
+        <InputBar
+          isOpen={isOpen}
+          onSubmit={handleSaveTask}
+          editingTask={editingTask}
+        />
 
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+        <section aria-label="Tasks List" className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full items-start">
           {tasks.map((task) => (
-            <div 
-              key={task.id} 
-              className="p-4 bg-slate-900/40 border border-white/10 rounded-xl backdrop-blur-sm shadow-md w-full flex items-center gap-4 h-fit"
+            <article
+              key={task.id}
+              className={`p-4 bg-slate-900/40 border border-white/10 rounded-xl backdrop-blur-sm shadow-md w-full flex items-start justify-between gap-3 overflow-hidden transition-all duration-300 ${
+                task.expanded ? "h-auto min-h-16" : "h-16"
+              }`}
             >
-              <button
-                onClick={() => handleToggleComplete(task.id)}
-                className="focus:outline-none shrink-0 cursor-pointer flex items-center justify-center w-9 h-9"
-              >
-                {task.completed ? (
-                  <img src={done} alt="Completed" className="w-6 h-6 object-contain" />
-                ) : (
-                  <img src={notdone} alt="Not Completed" className="w-9 h-9 object-contain" />
-                )}
-              </button>
-
-              <div className="flex-1 min-w-0">
-                <span 
-                  className={`text-lg font-medium tracking-wide block w-full break-words whitespace-normal text-left text-white ${
-                    task.completed ? "line-through text-white/30" : ""
-                  }`}
+              <div className="flex items-start gap-3 min-w-0 max-w-[75%] flex-1">
+                <button
+                  onClick={() => toggleTaskProperty(task.id, "completed")}
+                  aria-label={task.completed ? "Mark task as incomplete" : "Mark task as complete"}
+                  className="focus:outline-none shrink-0 cursor-pointer flex items-center justify-center w-9 h-9 mt-1"
                 >
-                  {task.text}
-                </span>
+                  <img
+                    src={task.completed ? done : notdone}
+                    alt=""
+                    className={`${task.completed ? "w-6 h-6" : "w-9 h-9"} object-contain`}
+                  />
+                </button>
+
+                <div
+                  onClick={() => toggleTaskProperty(task.id, "expanded")}
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Toggle full task text expansion"
+                  onKeyDown={(e) => e.key === 'Enter' && toggleTaskProperty(task.id, "expanded")}
+                  className="min-w-0 flex-1 cursor-pointer focus:outline-none"
+                >
+                  <span
+                    className={`text-lg font-medium tracking-wide block w-full text-left text-white break-all ${
+                      task.completed ? "line-through text-white/30" : ""
+                    } ${task.expanded ? "" : "line-clamp-1"}`}
+                  >
+                    {task.text}
+                  </span>
+                </div>
               </div>
-            </div>
+
+              <div className="flex items-center gap-2 shrink-0 pl-1 border-l border-white/10 h-9">
+                <button
+                  onClick={() => handleEditTask(task)}
+                  aria-label="Edit task item"
+                  className="p-1.5 hover:bg-white/10 rounded transition-colors cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-500"
+                >
+                  <img
+                    src={edit}
+                    alt=""
+                    className="w-5 h-5 object-contain"
+                  />
+                </button>
+                <button
+                  onClick={() => handleDeleteTask(task.id)}
+                  aria-label="Delete task item"
+                  className="p-1.5 hover:bg-red-500/20 text-red-400 rounded transition-colors cursor-pointer focus:outline-none focus:ring-1 focus:ring-red-500"
+                >
+                  <img
+                    src={deleteIcon}
+                    alt=""
+                    className="w-5 h-5 object-contain"
+                  />
+                </button>
+              </div>
+            </article>
           ))}
-        </div>
+        </section>
       </main>
     </div>
   );
