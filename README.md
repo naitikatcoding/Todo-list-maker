@@ -23,9 +23,7 @@ A full-stack task management application with a React front end, an Express/Node
 
 <div align="center">
 
-<video width="320" height="240" controls>
-  <source src="https://github.com/naitikatcoding/Todo-list-maker/blob/main/src/assets/demo.mp4" type="video/mp4">
-</video>
+C:\Users\SNEHA GUPTA\OneDrive\Desktop\coding\FULL STACK\Projects\Todo-list-maker\src\assets\demo.mp4
 
 </div>
 
