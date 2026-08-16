@@ -17,7 +17,7 @@ export default function InputBar({ onSubmit, isOpen, editingTask }) {
 
   return (
     <div
-      aria-hidden={!isOpen}
+      inert={!isOpen ? "" : undefined}
       className={`relative z-50 grid transition-all duration-500 ease-in-out rounded-xl shadow-xl mt-4 ${
         isOpen
           ? "grid-rows-[1fr] opacity-100 pointer-events-auto"
@@ -38,11 +38,11 @@ export default function InputBar({ onSubmit, isOpen, editingTask }) {
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder={editingTask ? "Edit Your Task..." : "Add Your Task..."}
-            className="flex-1 text-center p-2.5 text-2xl rounded-4xl border border-white/20 bg-slate-900/90 text-white font-bold placeholder-gray-500 focus:outline-none focus:border-[#0070f3]"
+            className="flex-1 text-center p-2.5 text-2xl rounded-[32px] border border-white/20 bg-slate-900/90 text-white font-bold placeholder-gray-500 focus:outline-none focus:border-[#0070f3]"
           />
           <button
             type="submit"
-            className="py-2.5 px-5 text-base rounded-2xl border-none bg-[#0070f3] text-white font-semibold cursor-pointer hover:bg-[#0051b3] transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="py-2.5 px-5 text-base rounded-md border-none bg-[#0070f3] text-white font-semibold cursor-pointer hover:bg-[#0051b3] transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
             {editingTask ? "Save" : "Add"}
           </button>
