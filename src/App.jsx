@@ -106,15 +106,15 @@ function App() {
           {tasks.map((task) => (
             <article
               key={task.id}
-              className={`p-4 bg-slate-900/40 border border-white/10 rounded-xl backdrop-blur-sm shadow-md w-full flex items-start justify-between gap-3 overflow-hidden transition-all duration-300 ${
+              className={`p-4 bg-slate-900/40 border border-white/10 rounded-xl backdrop-blur-sm shadow-md w-full flex items-center justify-between gap-3 overflow-hidden transition-all duration-300 ${
                 task.expanded ? "h-auto min-h-16" : "h-16"
               }`}
             >
-              <div className="flex items-start gap-3 min-w-0 max-w-[75%] flex-1">
+              <div className="flex items-center gap-3 min-w-0 max-w-[75%] flex-1">
                 <button
                   onClick={() => toggleTaskProperty(task.id, "completed", task.completed)}
                   aria-label={task.completed ? "Mark task as incomplete" : "Mark task as complete"}
-                  className="focus:outline-none shrink-0 cursor-pointer flex items-center justify-center w-9 h-9 mt-1"
+                  className="focus:outline-none shrink-0 cursor-pointer flex items-center justify-center w-9 h-9"
                 >
                   <img
                     src={task.completed ? done : notdone}
@@ -129,10 +129,10 @@ function App() {
                   tabIndex={0}
                   aria-label="Toggle full task text expansion"
                   onKeyDown={(e) => e.key === 'Enter' && toggleTaskProperty(task.id, "expanded", task.expanded)}
-                  className="min-w-0 flex-1 cursor-pointer focus:outline-none"
+                  className="min-w-0 flex-1 cursor-pointer focus:outline-none flex items-center"
                 >
                   <span
-                    className={`text-lg font-medium tracking-wide block w-full text-left text-white break-all ${
+                    className={`text-lg font-medium tracking-wide block w-full text-left text-white break-all leading-none ${
                       task.completed ? "line-through text-white/30" : ""
                     } ${task.expanded ? "" : "line-clamp-1"}`}
                   >
