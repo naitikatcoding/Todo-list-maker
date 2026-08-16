@@ -42,7 +42,7 @@ export default function InputBar({ onSubmit, isOpen, editingTask }) {
           />
           <button
             type="submit"
-            className="py-2.5 px-5 text-base rounded-md border-none bg-[#0070f3] text-white font-semibold cursor-pointer hover:bg-[#0051b3] transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="py-2.5 px-5 text-base rounded-2xl border-none bg-[#0070f3] text-white font-semibold cursor-pointer hover:bg-[#0051b3] transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
             {editingTask ? "Save" : "Add"}
           </button>
