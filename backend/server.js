@@ -51,7 +51,12 @@ app.post('/api/tasks', async (req, res) => {
 
 app.put('/api/tasks/:id', async (req, res) => {
   try {
-    const updated = await Todo.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updated = await Todo.findByIdAndUpdate(
+      req.params.id, 
+      req.body, 
+      { returnDocument: 'after' }
+    );
+    
     res.json({
       id: updated._id,
       text: updated.text,

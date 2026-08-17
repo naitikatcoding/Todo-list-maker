@@ -7,7 +7,8 @@ import done from "./assets/done.svg";
 import edit from "./assets/edit.svg";
 import deleteIcon from "./assets/delete.svg";
 
-const API_URL = "http://localhost:5000/api/tasks";
+const CURRENT_IP = window.location.hostname;
+const API_URL = `http://${CURRENT_IP}:5000/api/tasks`;
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
